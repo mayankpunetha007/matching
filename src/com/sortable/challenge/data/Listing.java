@@ -1,7 +1,7 @@
 package com.sortable.challenge.data;
 
 public class Listing {
-	
+
 	private String title; 
 	
 	private String manufacturer;
@@ -10,6 +10,12 @@ public class Listing {
 	
 	private String price;
 
+	public Listing(String title, String manufacturer,String currency,String price){
+		this.title = title;
+		this.manufacturer = manufacturer;
+		this.currency = currency;
+		this.price = price;
+	}
 	public String getTitle() {
 		return title;
 	}

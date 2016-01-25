@@ -12,6 +12,14 @@ public class Product{
 	
 	private String announcedDate;
 	
+	public Product(String productName, String manufacturer,String family,String model, String announcedDate){
+		this.productName = productName;
+		this.manufacturer = manufacturer;
+		this.family = family;
+		this.model = model;
+		this.announcedDate = announcedDate;
+	}
+	
 	public String getProductName() {
 		return productName;
 	}

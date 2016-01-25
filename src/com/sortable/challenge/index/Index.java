@@ -14,7 +14,7 @@ public class Index {
 		indexData(cleanString, index);
 	}
 
-	private static String cleanPrimaryData(String data) {
+	public static String cleanPrimaryData(String data) {
 		String ans="";
 		for(int i=0;i<data.length();i++){
 			if(data.charAt(i)=='/' || data.charAt(i)=='\\'){
