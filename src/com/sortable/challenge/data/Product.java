@@ -50,5 +50,9 @@ public class Product{
 	public void setAnnouncedDate(String announcedDate) {
 		this.announcedDate = announcedDate;
 	}
+	public String toString(){
+		return "productName:" + productName + ",manufacturer:" + manufacturer + ","
+				+ "family:" + family + ",model:" + model + ";\n";
+	}
 
 }

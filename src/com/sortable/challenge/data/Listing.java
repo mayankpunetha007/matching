@@ -2,20 +2,22 @@ package com.sortable.challenge.data;
 
 public class Listing {
 
-	private String title; 
-	
+	private String title;
+
 	private String manufacturer;
-	
+
 	private String currency;
-	
+
 	private String price;
 
-	public Listing(String title, String manufacturer,String currency,String price){
+	public Listing(String title, String manufacturer, String currency,
+			String price) {
 		this.title = title;
 		this.manufacturer = manufacturer;
 		this.currency = currency;
 		this.price = price;
 	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -46,5 +48,10 @@ public class Listing {
 
 	public void setPrice(String price) {
 		this.price = price;
-	}  
+	}
+
+	public String toString() {
+		return "title:" + title + ",manufacturer:" + manufacturer+";\n";
+	}
+
 }

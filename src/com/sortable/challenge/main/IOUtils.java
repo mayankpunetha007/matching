@@ -53,4 +53,10 @@ public class IOUtils {
 
 		
 	}
+	
+	public static List<String> readIrreLaventWords(){
+		
+		List<String> ans = new ArrayList<String>();
+		return ans;
+	}
 }
