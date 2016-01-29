@@ -1,4 +1,4 @@
-package com.sortable.challenge.logic;
+package com.matching.logic;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,8 +9,9 @@ import org.junit.After;
 import org.junit.Test;
 
 import com.google.gson.GsonBuilder;
-import com.sortable.challenge.data.Listing;
-import com.sortable.challenge.data.Product;
+import com.matching.data.Listing;
+import com.matching.data.Product;
+import com.matching.logic.ProcessFiles;
 
 
 public class CurrencyProcessorTest{
@@ -27,7 +28,7 @@ public class CurrencyProcessorTest{
 	}
 	
 	void currencyMatches(){
-		assertEquals(true, ProcessFiles.currencyMatches(new Listing("", "", "USD", "55"), new Listing("", "", "CAD", "59")));
+		assertEquals(true, ProcessFiles.currencyMatches(new Listing("", "", "USD", "55"), new Listing("", "", "CAD", "75")));
 		assertEquals(false, ProcessFiles.currencyMatches(new Listing("", "", "USD", "5"), new Listing("", "", "CAD", "59")));
 	}
 }

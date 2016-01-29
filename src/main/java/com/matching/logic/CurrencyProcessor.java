@@ -1,4 +1,4 @@
-package com.sortable.challenge.logic;
+package com.matching.logic;
 
 import java.io.BufferedReader;
 import java.io.IOException;

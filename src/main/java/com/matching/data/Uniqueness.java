@@ -1,4 +1,4 @@
-package com.sortable.challenge.data;
+package com.matching.data;
 
 public class Uniqueness{
 

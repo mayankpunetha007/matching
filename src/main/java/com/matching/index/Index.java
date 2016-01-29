@@ -1,4 +1,4 @@
-package com.sortable.challenge.index;
+package com.matching.index;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
-import com.sortable.challenge.data.Uniqueness;
+import com.matching.data.Uniqueness;
 
 public class Index {
 

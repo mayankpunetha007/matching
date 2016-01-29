@@ -1,4 +1,4 @@
-package com.sortable.challenge.logic;
+package com.matching.logic;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -25,12 +25,12 @@ import org.xml.sax.SAXException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sortable.challenge.data.Listing;
-import com.sortable.challenge.data.Product;
-import com.sortable.challenge.data.ProductName;
-import com.sortable.challenge.data.Uniqueness;
-import com.sortable.challenge.index.Index;
-import com.sortable.challenge.main.IOUtils;
+import com.matching.data.Listing;
+import com.matching.data.Product;
+import com.matching.data.ProductName;
+import com.matching.data.Uniqueness;
+import com.matching.index.Index;
+import com.matching.main.IOUtils;
 
 public class ProcessFiles {
 	public ProcessFiles() throws SAXException, IOException,
@@ -233,8 +233,8 @@ public class ProcessFiles {
 			String currency2 = listing.getCurrency().trim().toUpperCase();
 			Double currencyValue2 = Double.parseDouble(listing.getPrice()
 					.trim()) / currencyMap.get(currency2);
-			if ((currencyValue1 / currencyValue2) > 0.95
-					&& (currencyValue1 / currencyValue2) < 1.05) {
+			if ((currencyValue1 / currencyValue2) > 0.90
+					&& (currencyValue1 / currencyValue2) < 1.1) {
 				return true;
 			}
 		} catch (Exception e) {

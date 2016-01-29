@@ -1,4 +1,4 @@
-package com.sortable.challenge.main;
+package com.matching.main;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,8 +13,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.google.gson.Gson;
-import com.sortable.challenge.data.Listing;
-import com.sortable.challenge.data.Product;
+import com.matching.data.Listing;
+import com.matching.data.Product;
 
 public class IOUtils {
 	public static List<Product> readProductsData(File file)
