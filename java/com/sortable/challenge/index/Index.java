@@ -14,13 +14,14 @@ import com.sortable.challenge.data.Uniqueness;
 
 public class Index {
 	
-	public static Map<String, List<Integer> > index = new TreeMap<String, List<Integer> >();
+	public static Map<String, List<Integer> > completeIndex = new TreeMap<String, List<Integer> >();
+	public static Map<String, List<Integer> > manufactruerIndex = new TreeMap<String, List<Integer> >();
 	public static Map<String, Integer> unique = new TreeMap<String, Integer>();
 	private static HashMap<String, Integer> reset;
 	
-	public static void addDataToIndex(String data, int index){
+	private static void addDataToIndex(String data, int index,Map<String, List<Integer> > indexTo ){
 		String cleanString = cleanPrimaryData(data);
-		indexData(cleanString, index);
+		indexData(cleanString, index, indexTo);
 	}
 
 	public static String cleanPrimaryData(String data) {
@@ -29,18 +30,18 @@ public class Index {
 		}
 		String ans="";
 		for(int i=0;i<data.length();i++){
-			if(data.charAt(i)=='/' || data.charAt(i)=='\\' || data.charAt(i)=='_' || data.charAt(i)=='-'){
+			if(data.charAt(i)=='/' || data.charAt(i)=='\\' || data.charAt(i)=='_'){
 				data+=" ";
 				continue;
 			}
-			if((data.charAt(i)>='a' && data.charAt(i)<='z') || (data.charAt(i)>='A' && data.charAt(i)<='Z')||  data.charAt(i)==' ' || data.charAt(i)=='.' || (data.charAt(i)>='0' && data.charAt(i)<='9')){
+			if((data.charAt(i)>='a' && data.charAt(i)<='z') || (data.charAt(i)>='A' && data.charAt(i)<='Z')|| data.charAt(i)=='-' || data.charAt(i)==' ' || data.charAt(i)=='.' || (data.charAt(i)>='0' && data.charAt(i)<='9')){
 				ans+=data.charAt(i);
 			}
 		}
 		return ans;
 		
 	}
-	private static void indexData(String dataToIndex, int currentData){
+	private static void indexData(String dataToIndex, int currentData, Map<String, List<Integer> > index){
 		String[] tokens = dataToIndex.split(" ");
 		for(String token:tokens){
 			token = token.trim().toLowerCase();
@@ -62,7 +63,7 @@ public class Index {
 	public static void resetIndex(){
 		reset = new HashMap<String, Integer>();
 	}
-	public static Map<Integer,Double> getIndexingDataWithScores(String temp, double score){
+	private static Map<Integer,Double> getIndexingDataWithScores(String temp, double score, Map<String, List<Integer> > index ){
 		temp = temp.trim().toLowerCase();
 		Map<Integer,Double> ans = new HashMap<Integer, Double>();
 		String cleanData = Index.cleanPrimaryData(temp);
@@ -102,6 +103,23 @@ public class Index {
 		return ans;
 		
 	}
+	
+	public static void addDataToManufactruerIndex(String data, int index){
+		 addDataToIndex(data, index, manufactruerIndex);
+	}
+	
+	public static void addDataToIndex(String data, int index){
+		 addDataToIndex(data, index, completeIndex);
+	}
+	
+	public static Map<Integer,Double> getManufactruerDataWithScores(String temp, double score){
+		return getIndexingDataWithScores(temp, score, manufactruerIndex);
+	}
+	
+	public static Map<Integer,Double> getIndexingDataWithScores(String temp, double score){
+		return getIndexingDataWithScores(temp, score, completeIndex);
+	}
+	
 	
 	
 

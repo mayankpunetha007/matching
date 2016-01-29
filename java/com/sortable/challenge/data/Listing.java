@@ -9,7 +9,7 @@ public class Listing {
 	private String currency;
 
 	private String price;
-
+	
 	public Listing(String title, String manufacturer, String currency,
 			String price) {
 		this.title = title;
@@ -53,5 +53,4 @@ public class Listing {
 	public String toString() {
 		return "title:" + title + ",manufacturer:" + manufacturer+";\n";
 	}
-
 }

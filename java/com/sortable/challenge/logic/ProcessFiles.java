@@ -1,25 +1,40 @@
-package com.sortable.challenge.learn;
+package com.sortable.challenge.logic;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Writer;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.simple.parser.ParseException;
+import javax.xml.parsers.ParserConfigurationException;
 
+import org.json.simple.parser.ParseException;
+import org.xml.sax.SAXException;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sortable.challenge.data.Listing;
 import com.sortable.challenge.data.Product;
+import com.sortable.challenge.data.ProductName;
 import com.sortable.challenge.data.Uniqueness;
 import com.sortable.challenge.index.Index;
 import com.sortable.challenge.main.IOUtils;
 
-public class SupervisedLearner {
+public class ProcessFiles {
+	public ProcessFiles() throws SAXException, IOException,
+			ParserConfigurationException, URISyntaxException {
+		currencyMap = CurrencyProcessor.connectAndProcess();
+	}
+	static Map<String, Double> currencyMap;
 
 	/**
 	 * To check uniqueness of a word in the current index For given data all
@@ -38,7 +53,7 @@ public class SupervisedLearner {
 		int i = 0;
 		for (Listing listing : allListings) {
 			String cleanData = listing.getManufacturer();
-			Index.addDataToIndex(cleanData, i);
+			Index.addDataToManufactruerIndex(cleanData, i);
 			cleanData = Index.cleanPrimaryData(listing.getTitle());
 			Index.addDataToIndex(cleanData, i);
 			i++;
@@ -66,6 +81,7 @@ public class SupervisedLearner {
 
 	public static void solveAndPrintToFile(String listings, String products)
 			throws Exception {
+		currencyMap = CurrencyProcessor.connectAndProcess();
 		List<Listing> allListings = IOUtils
 				.readListingsData(new File(listings));
 		List<Product> allProducts = IOUtils
@@ -74,13 +90,12 @@ public class SupervisedLearner {
 		for (Listing listing : allListings) {
 			String cleanData = Index
 					.cleanPrimaryData(listing.getManufacturer());
+			Index.addDataToManufactruerIndex(cleanData, i);
 			Index.addDataToIndex(cleanData, i);
 			cleanData = Index.cleanPrimaryData(listing.getTitle());
 			Index.addDataToIndex(cleanData, i);
 			i++;
 		}
-		FileOutputStream fileOutputStream = new FileOutputStream(new File(
-				"ans.txt"));
 		// List<String> irrelaventWords = IOUtils.readIrreLaventWords();
 		Map<Product, List<Listing>> answer = new HashMap<Product, List<Listing>>();
 		for (Product product : allProducts) {
@@ -89,36 +104,89 @@ public class SupervisedLearner {
 			String cleanData = Index
 					.cleanPrimaryData(product.getManufacturer());
 			Map<Integer, Double> finalMatches = Index
-					.getIndexingDataWithScores(cleanData, 1.0);
-			cleanData = Index.cleanPrimaryData(product.getProductName());
+					.getManufactruerDataWithScores(cleanData, 50.0);
 			Map<Integer, Double> firstMatches = Index
+					.getIndexingDataWithScores(cleanData, 30.0);
+			join(finalMatches, firstMatches, 50.0);
+			cleanData = Index.cleanPrimaryData(product.getProductName());
+			firstMatches = Index
 					.getIndexingDataWithScores(cleanData, 50.0);
-			join(finalMatches, firstMatches, 2.0);
+			join(finalMatches, firstMatches, 50.0);
 			cleanData = Index.cleanPrimaryData(product.getModel());
 			firstMatches = Index.getIndexingDataWithScores(cleanData, 50.0);
-			join(finalMatches, firstMatches, 5.0);
+			join(finalMatches, firstMatches, 50.0);
 			cleanData = Index.cleanPrimaryData(product.getFamily());
-			firstMatches = Index.getIndexingDataWithScores(cleanData, 1.0);
+			firstMatches = Index.getIndexingDataWithScores(cleanData, 25.0);
 			join(finalMatches, firstMatches, 1.0);
 			double max = 100.0;
-			int index = -1;
+			int index = 0;
 			List<Listing> possibleMatches = new ArrayList<Listing>();
 			for (Integer key : finalMatches.keySet()) {
 				if (finalMatches.get(key) > 100.0) {
 					possibleMatches.add(allListings.get(key));
 					if (finalMatches.get(key) > max) {
 						max = finalMatches.get(key);
-						index = finalMatches.size() - 1;
+						index = possibleMatches.size() - 1;
 					}
 				}
 			}
-			answer.put(product, filterMatches(possibleMatches,index));
+			if (index < possibleMatches.size()) {
+				answer.put(product, filterMatches(possibleMatches, index));
+			}
 		}
+		printToFile(answer);
 	}
 
-	private static List<Listing> filterMatches(
-			List<Listing> possibleMatches, int index) {
-		return possibleMatches;
+	private static void printToFile(Map<Product, List<Listing>> answer)
+			throws IOException {
+		FileWriter fileOutputStream = new FileWriter(new File("ans.txt"));
+		for(Product p:answer.keySet()){
+			List<Listing> temp = answer.get(p);
+			String man = p.getProductName();
+			ProductName prod = new ProductName(man,temp);
+			fileOutputStream.write(new GsonBuilder().setPrettyPrinting().create().toJson(prod) +"\n");
+		}
+		fileOutputStream.flush();
+		fileOutputStream.close();
+	}
+
+	private static List<Listing> filterMatches(List<Listing> possibleMatches,
+			int index) throws Exception {
+		Listing tempAns = possibleMatches.get(index);
+		List<Listing> answer = new ArrayList<Listing>();
+		answer.add(tempAns);
+		for (int i = 0; i < possibleMatches.size(); i++) {
+			if (i == index) {
+				continue;
+			} else if (currencyMatches(tempAns,
+					possibleMatches.get(i)) && hasHighCorrelation(tempAns, possibleMatches.get(i))) {
+				answer.add(possibleMatches.get(i));
+			}
+		}
+		return answer;
+	}
+
+	private static boolean hasHighCorrelation(Listing tempAns, Listing listing) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	private static boolean currencyMatches(Listing tempAns, Listing listing) {
+		try {
+			String currency1 = tempAns.getCurrency().trim().toUpperCase();
+			Double currencyValue1 = Double.parseDouble(tempAns.getPrice()
+					.trim()) * currencyMap.get(currency1);
+			String currency2 = listing.getCurrency().trim().toUpperCase();
+			Double currencyValue2 = Double.parseDouble(listing.getPrice()
+					.trim()) * currencyMap.get(currency2);
+			if ((currencyValue1 / currencyValue2) > 0.99
+					|| (currencyValue1 / currencyValue2) < 1.01) {
+				return true;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+		return false;
 	}
 
 	private static void join(Map<Integer, Double> finalMatches,

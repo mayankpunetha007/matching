@@ -2,7 +2,8 @@ package com.sortable.challenge.main;
 
 
 
-import com.sortable.challenge.learn.SupervisedLearner;
+import com.sortable.challenge.logic.CurrencyProcessor;
+import com.sortable.challenge.logic.ProcessFiles;
 
 public class Main {
 
@@ -14,8 +15,9 @@ public class Main {
 			//Not needed since all Listing in learning data give imp strings
 		}
 		*/
-		if(args[0].equals("learn_constants")){
-			SupervisedLearner.solveAndPrintToFile(args[1],args[2]);
+		CurrencyProcessor.connectAndProcess();
+		if(args[0].equals("solve")){
+			ProcessFiles.solveAndPrintToFile(args[1],args[2]);
 		}
 
 	}
